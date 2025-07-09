@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>All Recipes</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .stars {
+            color: gold;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<h2>All Recipes</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Cuisine</th>
+            <th>Rating</th>
+            <th>Total Time</th>
+            <th>Prep Time</th>
+            <th>Cook Time</th>
+            <th>Serves</th>
+            <th>Description</th>
+            <th>Ingredients</th>
+            <th>Instructions</th>
+            <th>Calories</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in recipes %}
+        <tr>
+            <td class="truncate" title="{{ r.title }}">{{ r.title }}</td>
+            <td>{{ r.cuisine }}</td>
+            <td class="stars">
+                {% set rating = r.rating | round(0, 'floor') %}
+                {% for i in range(1, 6) %}
+                    {% if i <= rating %}
+                        ★
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>{{ r.total_time }} min</td>
+            <td>{{ r.prep_time }} min</td>
+            <td>{{ r.cook_time }} min</td>
+            <td>{{ r.serves }}</td>
+            <td>{{ r.description }}</td>
+            <td><pre>{{ r.ingredients }}</pre></td>
+            <td><pre>{{ r.instructions }}</pre></td>
+            <td>
+                {% if r.nutrients %}
+                    {% set nutrients = r.nutrients | safe | tojson | loads %}
+                    {{ nutrients.get('calories', '-') }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
